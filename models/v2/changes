@@ -1,0 +1,8 @@
+- Cross entropy loss 
+- More Preprocessing 
+- Lower dropout rate
+
+result: 
+
+- Less accuracy
+- more overfitting

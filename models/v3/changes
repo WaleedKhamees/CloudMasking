@@ -1,0 +1,6 @@
+- dropout rate now changed to 0.4
+- squeezenet is the first encoding layer 
+
+results 
+
+failed 

@@ -1,0 +1,145 @@
+\documentclass[a4paper,14pt]{extarticle}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{enumitem} % For customizing lists
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{makecell} % For making multi-line cells in tables
+\usepackage{hyperref} % For hyperlinks
+\usepackage{listings} % For code listings
+\usepackage{xcolor}
+\usepackage{easytable}
+\usepackage{doi} % For adding doi to references
+\usepackage{fontspec}
+
+\setmonofont{IBM Plex Mono}
+\setmainfont{IBM Plex Serif}
+
+
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{
+  language=C,
+  basicstyle=\normalsize\fontfamily{cmtt}\selectfont,
+  keywordstyle=\color{blue},
+  commentstyle=\color{green},
+  breaklines=true,
+  frame=single,
+  numbers=none, % Remove line numbers
+  numberstyle=\tiny\color{gray}, % Style for line numbers (not used here)
+}
+
+
+\newcommand{\unnumberedsection}[1]{
+  \section*{#1}
+  \addcontentsline{toc}{section}{#1}  
+}
+
+\newcommand{\unnumberedsubsection}[1]{
+  \subsection*{#1}
+  \addcontentsline{toc}{subsection}{#1}
+}
+
+\newcommand{\imagewithcaption}[3]{
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=#1\textwidth]{#2}
+    \caption{#3}
+    \label{fig:#2}
+  \end{figure}
+}
+
+
+\begin{document}
+
+\unnumberedsection{Satellite Project: Cloud Masking}
+
+\unnumberedsection{Team Members}
+
+\begin{center}
+    \begin{TAB}(v,1cm,1cm)[5pt]{|l|l|l|l|}{|c|c|c|c|c|}% (rows,min,max)[tabcolsep]{columns}{rows}
+    \textbf{ID} & \textbf{Name} & \textbf{Sec} & \textbf{BN} \\
+    9210684 & Ali Mohamed Farid & 1 & 25 \\
+    9213035 & Waleed Ousama Khamees & 2 & 30 \\
+    9213347 & Mohamed Maher Hasan Amin & 2 & 12 \\
+    9211164 & Mostafa Elsayed & 2 & 20 \\
+    \end{TAB}
+\end{center}
+
+\unnumberedsection{Project Pipeline}
+\imagewithcaption{1.1}{architecture.png}{Project Architecture}
+
+\newpage
+
+\unnumberedsection{PreProcessing}
+The preprocessing steps included:
+\begin{itemize}
+    \item Loading and processing satellite images and their corresponding masks from TIFF files
+    \item Converting GDAL datasets to NumPy arrays for processing
+    \item Splitting the dataset into training (76.5\%), validation (8.5\%), and test sets (15\%)
+    \item Creating a custom PyTorch Dataset class to handle the satellite data
+    \item Implementing data augmentation techniques (not shown in the notebook)
+\end{itemize}
+
+\unnumberedsection{Exploratory Data Analysis}
+Key findings from the data exploration:
+\begin{itemize}
+    \item Dataset contains 10,573 image-mask pairs in total
+    \item Images are 4-channel RGB + infrared with dimensions 512x512
+    \item Masks are binary (cloud vs. non-cloud) with same dimensions
+    \item Data was shuffled with a fixed random seed (42) for reproducibility
+\end{itemize}
+
+\unnumberedsection{Model Selection and Training Module}
+The model architecture and training details:
+\begin{itemize}
+    \item Implemented a U-Net architecture with:
+    \begin{itemize}
+        \item 5 encoder blocks with increasing channels (32, 64, 128, 256, 512)
+        \item Bottleneck layer with 1024 channels
+        \item 5 decoder blocks with skip connections
+        \item Final sigmoid activation for binary classification
+    \end{itemize}
+    \item Training parameters:
+    \begin{itemize}
+        \item Batch size: 16
+        \item Learning rate: 0.001
+        \item Optimizer: SGD
+        \item Loss function: Binary Cross Entropy (BCELoss)
+        \item Dropout probability: 0.5
+        \item Number of epochs: 15
+    \end{itemize}
+    \item Performance metrics:
+    \begin{itemize}
+        \item Dice coefficient used for validation and testing
+        \item Achieved validation accuracy of 87.78\% by final epoch
+    \end{itemize}
+\end{itemize}
+
+\unnumberedsection{Performance Analysis Module}
+Model performance results:
+\begin{itemize}
+    \item Final test Dice coefficient: 0.8789 (87.89\%)
+    \item Model has 7,764,353 parameters
+    \item Approximately 1.48 trillion operations per forward pass
+    \item Training convergence:
+    \begin{itemize}
+        \item Started with train loss of 0.6471 (epoch 1)
+        \item Improved to 0.3757 by final epoch
+        \item Validation accuracy steadily increased from 76.69\% to 87.78\%
+    \end{itemize}
+\end{itemize}
+
+\unnumberedsection{Enhancement and Future Work}
+Potential improvements and future directions:
+\begin{itemize}
+    \item Experiment with different architectures (e.g., ResUNet, Attention UNet)
+    \item Try different optimizers (Adam, RMSprop) and learning rate schedules
+    \item Implement more sophisticated data augmentation techniques
+    \item Add multi-class segmentation for different cloud types
+    \item Deploy the model as a web service for real-time cloud masking
+    \item Optimize the model for edge devices with quantization/pruning
+\end{itemize}
+
+\end{document}

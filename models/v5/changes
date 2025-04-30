@@ -1,0 +1,6 @@
+- replaced enc1 with resnet18 
+
+
+results 
+
+- accuract : 0.77

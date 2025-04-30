@@ -1,0 +1,5 @@
+- FireModule instead of enc1
+
+results 
+
+- accuracy increased to 0.85 on 10 epochs on validation set 

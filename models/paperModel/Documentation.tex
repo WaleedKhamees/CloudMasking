@@ -1,0 +1,154 @@
+\documentclass[a4paper,14pt]{extarticle}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{enumitem} % For customizing lists
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{makecell} % For making multi-line cells in tables
+\usepackage{hyperref} % For hyperlinks
+\usepackage{listings} % For code listings
+\usepackage{xcolor}
+\usepackage{easytable}
+\usepackage{doi} % For adding doi to references
+\usepackage{fontspec}
+
+\setmonofont{IBM Plex Mono}
+\setmainfont{IBM Plex Serif}
+
+
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{
+  language=C,
+  basicstyle=\normalsize\fontfamily{cmtt}\selectfont,
+  keywordstyle=\color{blue},
+  commentstyle=\color{green},
+  breaklines=true,
+  frame=single,
+  numbers=none, % Remove line numbers
+  numberstyle=\tiny\color{gray}, % Style for line numbers (not used here)
+}
+
+
+\newcommand{\unnumberedsection}[1]{
+  \section*{#1}
+  \addcontentsline{toc}{section}{#1}  
+}
+
+\newcommand{\unnumberedsubsection}[1]{
+  \subsection*{#1}
+  \addcontentsline{toc}{subsection}{#1}
+}
+
+\newcommand{\imagewithcaption}[3]{
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=#1\textwidth]{#2}
+    \caption{#3}
+    \label{fig:#2}
+  \end{figure}
+}
+
+
+\begin{document}
+
+\unnumberedsection{Satellite Project: Cloud Masking}
+
+\unnumberedsection{Team Members}
+
+\begin{center}
+    \begin{TAB}(v,1cm,1cm)[5pt]{|l|l|l|l|}{|c|c|c|c|c|}% (rows,min,max)[tabcolsep]{columns}{rows}
+    \textbf{ID} & \textbf{Name} & \textbf{Sec} & \textbf{BN} \\
+    9213035 & Waleed Ousama Khamees & 2 & 30 \\
+    9210684 & Ali Mohamed Farid & 1 & 25 \\
+    9213347 & Mohamed Maher Hasan Amin & 2 & 12 \\
+    9211164 & Mostafa Elsayed & 2 & 20 \\
+    \end{TAB}
+\end{center}
+
+\unnumberedsection{Project Pipeline}
+\imagewithcaption{1}{architecture.png}{Project Architecture}
+
+\newpage
+
+\unnumberedsection{PreProcessing}
+The preprocessing pipeline includes:
+\begin{itemize}
+    \item Loading and organizing satellite images and their corresponding masks
+    \item Converting GDAL datasets to NumPy arrays for processing
+    \item Splitting the dataset into training (\%), validation (20\%), and test (20\%) sets.
+    \item Applying random horizontal and vertical flips and random rotations to augment the dataset.
+\end{itemize}
+
+
+\unnumberedsection{Exploratory Data Analysis}
+
+\begin{itemize}
+    \item Dataset consists of 10,573 satellite images with corresponding\\
+      cloud masks
+    \item Images are in TIFF format with 4 spectral bands
+    \item Masks are binary (cloud vs. no-cloud)
+    \item Image dimensions: 512x512 pixels
+    \item Data distribution:
+
+    \begin{enumerate}
+        \item Training: 6,343 images
+        \item Validation: 2,115 images
+        \item Test: 2,115 images
+    \end{enumerate}
+
+\end{itemize}
+
+\unnumberedsection{Model Selection and Training Module}
+
+\unnumberedsubsection{Model Architecture}
+We implemented a U-Net architecture with:
+\begin{itemize}
+    \item Encoder-decoder structure with skip connections
+    \item 5 levels of downsampling and upsampling
+    \item Batch normalization and dropout for regularization
+    \item Final sigmoid activation for binary classification
+\end{itemize}
+
+\unnumberedsubsection{Training Parameters}
+\begin{itemize}
+    \item Batch size: 16
+    \item Learning rate: 0.001
+    \item Number of epochs: 10
+    \item Loss function: Cross Entropy Loss
+    \item Optimizer: SGD
+    \item Dropout probability: 0.1
+\end{itemize}
+
+
+\unnumberedsection{Performance Analysis Module}
+
+\unnumberedsubsection{Evaluation Metrics}
+\begin{itemize}
+    \item Dice Coefficient: 0.8849 on test set
+    \item Model has 7,764,353 parameters
+    \item Approximately 1.48 trillion operations per forward pass
+\end{itemize}
+
+\unnumberedsubsection{Training Results}
+The model showed consistent improvement during training:
+\begin{itemize}
+    \item Stable decrease in training loss
+    \item Good generalization on validation set
+    \item Final test performance indicates effective learning
+\end{itemize}
+
+\unnumberedsection{Enhancement and Future Work}
+
+Potential improvements:
+\begin{itemize}
+    \item Experiment with different loss functions (Dice loss, Focal loss)
+    \item Try more advanced architectures (Attention U-Net, ResUNet)
+    \item Implement data augmentation for better generalization
+    \item Optimize hyperparameters using grid search
+    \item Explore transfer learning from pre-trained models
+    \item Implement model quantization for deployment
+\end{itemize}
+
+\end{document}
